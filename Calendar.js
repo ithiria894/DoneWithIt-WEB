@@ -30,10 +30,6 @@ const Calendar = ({ setSelectedDate }) => {
     setMonthGrid(generatedMonthGrid);
   }, []);
 
-  // Rest of your component code...
-
-
-
   const generateMonthGrid = (year, month) => {
     const startDate = startOfMonth(new Date(year, month - 1));
     const endDate = endOfMonth(startDate);
@@ -78,16 +74,26 @@ const Calendar = ({ setSelectedDate }) => {
   };
 
   const handleMonthChange = (newMonth) => {
+    let newYear = year;
+    if (newMonth === 0) {
+      newMonth = 12;
+      newYear -= 1;
+    } else if (newMonth === 13) {
+      newMonth = 1;
+      newYear += 1;
+    }
     setMonth(newMonth);
-    const generatedMonthGrid = generateMonthGrid(year, newMonth);
+    setYear(newYear);
+    const generatedMonthGrid = generateMonthGrid(newYear, newMonth);
     setMonthGrid(generatedMonthGrid);
   };
-
+  
   const handleYearChange = (newYear) => {
     setYear(newYear);
     const generatedMonthGrid = generateMonthGrid(newYear, month);
     setMonthGrid(generatedMonthGrid);
   };
+  
 
   const handleCellClick = (day) => {
     setSelectedDate(day);
@@ -95,6 +101,22 @@ const Calendar = ({ setSelectedDate }) => {
 
   const handleActivityClick = () => {
     setModalVisible(true);
+  };
+
+  const isToday = (someDate) => {
+    const today = new Date();
+    return (
+      someDate.getDate() === today.getDate() &&
+      someDate.getMonth() === today.getMonth() &&
+      someDate.getFullYear() === today.getFullYear()
+    );
+  };
+
+  const isCurrentMonth = (someDate) => {
+    return (
+      someDate.getMonth() + 1 === month &&
+      someDate.getFullYear() === year
+    );
   };
 
   const cellWidth = containerWidth / 7;
@@ -121,7 +143,7 @@ const Calendar = ({ setSelectedDate }) => {
         >
           {week.map((day, dayIndex) => (
             <TouchableOpacity
-              key={day.toISOString()} // Use a unique identifier for each day
+              key={day.toISOString()}
               style={[styles.dayOpacityContainer, { width: cellWidth }]}
               onPress={() => handleCellClick(day)}
             >
@@ -131,7 +153,16 @@ const Calendar = ({ setSelectedDate }) => {
                   { width: cellWidth, height: getRowHeight(week) },
                 ]}
               >
-                <Text style={styles.dayNumber}>{day.getDate().toString()}</Text>
+                <Text
+                  style={[
+                    styles.dayNumber,
+                    isToday(day) ? styles.todayDayNumber :
+                    isCurrentMonth(day) ? styles.currentMonthDayNumber :
+                    styles.otherMonthDayNumber
+                  ]}
+                >
+                  {day.getDate().toString()}
+                </Text>
                 {activities.map((activity, activityIndex) => {
                   const activityDate = new Date(activity.startTime);
                   if (
@@ -160,38 +191,36 @@ const Calendar = ({ setSelectedDate }) => {
       ))}
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          style={styles.prevButton}
+          style={styles.button}
           onPress={() => handleMonthChange(month - 1)}
         >
           <Text>Prev</Text>
         </TouchableOpacity>
-        {/* <Text>                                                                                         </Text> */}
-        {/* //make a Now button */}
 
         <TouchableOpacity
-          style={styles.nextButton}
+          style={styles.button}
           onPress={() => handleMonthChange(new Date().getMonth() + 1)}
         >
           <Text>Now</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.nextButton}
+          style={styles.button}
           onPress={() => handleMonthChange(month + 1)}
         >
           <Text>Next</Text>
         </TouchableOpacity>
-        {/* <TouchableOpacity
-          style={styles.prevButton}
+        <TouchableOpacity
+          style={styles.button}
           onPress={() => handleYearChange(year - 1)}
         >
           <Text>Prev Year</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.nextButton}
+          style={styles.button}
           onPress={() => handleYearChange(year + 1)}
         >
           <Text>Next Year</Text>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -242,17 +271,31 @@ const styles = StyleSheet.create({
     padding: 5,
     backgroundColor: 'transparent',
     borderWidth: 0,
-    color: 'blue', // Make the day number blue
+  },
+  todayDayNumber: {
+    color: "blue",
+  },
+  currentMonthDayNumber: {
+    color: "grey",
+  },
+  otherMonthDayNumber: {
+    color: "transparent",
   },
   buttonContainer: {
     flexDirection: "row",
-    marginTop: 10,
+    justifyContent: "space-between",
+    width: "100%",
+    paddingHorizontal: 10,
+    marginTop: 5,
   },
-  prevButton: {
-    marginHorizontal: 5,
-  },
-  nextButton: {
-    marginHorizontal: 5,
+  button: {
+    flex: 1, 
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#DDDDDD",
+    // paddingVertical: 10,
+    borderRadius: 5,
+    marginHorizontal: 5, // Add margin to separate buttons
   },
 });
 

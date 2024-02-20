@@ -1,10 +1,10 @@
 import React, { useState, useContext } from "react";
-import { View, Modal, Text, Button, StyleSheet, TouchableWithoutFeedback, ActivityIndicator ,TextInput} from "react-native";
+import { View, Modal, Text, Button, StyleSheet, TouchableWithoutFeedback, ActivityIndicator, TextInput, Pressable, Keyboard } from "react-native";
 
 import { ActivityContext } from "./ActivityContext";
 import ActivityForm from "./ActivityForm";
-import { Keyboard } from "react-native";
-import { Pressable } from "react-native";
+
+
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI("AIzaSyAM6FeJ732q8B4D0b25nbcWbO1zwRsOmUw");
 import { useEffect } from "react";
@@ -19,7 +19,6 @@ const AddWithChatgpt = () => {
   const [ActivityFormVisible, setActivityFormVisible] = useState(false);
   const [longPrompt, setLongPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
 
   useEffect(() => {
     const longPrompt = `
@@ -142,6 +141,9 @@ const AddWithChatgpt = () => {
     setModalVisible(false);
     setUserInput("");
   };
+  const clearContent = () => {
+    setUserInput("");
+  };
 
   return (
     <View style={styles.container}>
@@ -156,23 +158,30 @@ const AddWithChatgpt = () => {
         onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Enter Your Request</Text>
-            <TextInput
-              style={styles.input}
-              multiline={true}
-              placeholder="Enter your request..."
-              value={userInput || ""}
-              onChangeText={setUserInput}
-              editable={true}
-            />
-            {error && <Text style={styles.errorText}>{error}</Text>}
-            <View style={styles.buttonContainer}>
-              <Button title="Cancel" onPress={handleCancel} />
-              <Button title="Submit" onPress={callGeminiAPI} />
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.modalContent}>
+              {error && <Text style={styles.errorText}>{error}</Text>}
+              <View style={styles.buttonContainer}>
+                <Text style={styles.modalTitle}>Enter Your Request</Text>
+                <Button title="Clear" onPress={clearContent} />
+              </View>
+              <TextInput
+                style={styles.input}
+                multiline={true}
+                placeholder="Enter your request..."
+                value={userInput || ""}
+                onChangeText={setUserInput}
+                editable={true}
+              />
+              
+              <View style={styles.buttonContainer}>
+                <Button title="Cancel" onPress={handleCancel} />
+                <Button title="Submit" onPress={callGeminiAPI} />
+              </View>
+              {isLoading && <ActivityIndicator style={styles.activityIndicator} />}
+
             </View>
-            {isLoading && <ActivityIndicator style={styles.activityIndicator} />}
-          </View>
+          </TouchableWithoutFeedback>
         </View>
       </Modal>
 
@@ -221,7 +230,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     width: "100%",
-    marginTop: 120,
+    marginTop: 100,
   },
   modalTitle: {
     fontSize: 18,
@@ -263,7 +272,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     top: "50%",
   },
-  
 });
 
 export default AddWithChatgpt;

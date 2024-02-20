@@ -1,15 +1,13 @@
 import React, { useContext } from "react";
-import { View, FlatList, Pressable, Text, StyleSheet } from "react-native";
+import { View, Text, FlatList } from "react-native";
 import { ActivityContext } from "./ActivityContext";
 import ActivityItem from "./ActivityItem";
+import ShowAllActivityButton from "./ShowAllActivityButton"; // Import the new component
 
 const ActivityList = ({ selectedDate, setSelectedDate }) => {
   const { activities } = useContext(ActivityContext);
 
-  const handleShowAllActivities = () => {
-    setSelectedDate(null);
-  };
-
+  // Filter activities based on selectedDate
   const filteredActivities = selectedDate
     ? activities.filter((activity) => {
         const activityDate = new Date(activity.startTime);
@@ -23,46 +21,32 @@ const ActivityList = ({ selectedDate, setSelectedDate }) => {
       })
     : activities;
 
+  // Function to format date in desired format (dd-mm-yyyy)
+  const formatDate = (date) => {
+    const d = new Date(date);
+    const day = d.getDate().toString().padStart(2, "0");
+    const month = (d.getMonth() + 1).toString().padStart(2, "0");
+    const year = d.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
   return (
     <View>
-      <View style={styles.buttonContainer}>
-        <Pressable
-          onPress={handleShowAllActivities}
-          style={({ pressed }) => [
-            styles.showAllButton,
-            { backgroundColor: pressed ? "#87CEFA" : "#1E90FF" }, // Blue when not pressed, lighter blue when pressed
-          ]}
-        >
-          <Text style={styles.showAllText}>Show All Activities</Text>
-        </Pressable>
-      </View>
-
       <FlatList
         data={filteredActivities}
-        renderItem={({ item }) => <ActivityItem activity={item} />}
+        renderItem={({ item, index }) => (
+          <>
+            {/* Render date title if it's the first activity of the day */}
+            {index === 0 || formatDate(filteredActivities[index - 1].startTime) !== formatDate(item.startTime) ? (
+              <Text>{formatDate(item.startTime)}</Text>
+            ) : null}
+            <ActivityItem activity={item} />
+          </>
+        )}
         keyExtractor={(item) => item.id.toString()}
       />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  buttonContainer: {
-    alignSelf: "flex-start", // Ensure the container's width adjusts to the text content
-    // marginBottom: 10,
-  },
-  showAllButton: {
-    // paddingVertical: 10,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: "#1E90FF", // Blue border color
-  },
-  showAllText: {
-    fontSize: 12,
-    textAlign: "center",
-    color: "#FFFFFF", // White text color
-  },
-});
 
 export default ActivityList;

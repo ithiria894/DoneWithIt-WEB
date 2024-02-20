@@ -25,8 +25,8 @@ const ActivityItem = ({ activity }) => {
   function formatDateTime(dateTimeString) {
     const date = new Date(dateTimeString);
     const options = {
-      month: "numeric",
-      day: "numeric",
+      // month: "numeric",
+      // day: "numeric",
       hour: "numeric",
       minute: "numeric",
     };

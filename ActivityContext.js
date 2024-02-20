@@ -7,10 +7,19 @@ const ActivityContext = createContext();
 const ActivityProvider = ({ children }) => {
   const [activities, setActivities] = useState([]);
 
+  // const addActivity = (activity) => {
+  //   activity.id = Date.now();
+  //   activity.createdTime = new Date().toLocaleString();
+  //   setActivities([...activities, activity]);
+  // };
   const addActivity = (activity) => {
     activity.id = Date.now();
     activity.createdTime = new Date().toLocaleString();
-    setActivities([...activities, activity]);
+    // Add the new activity
+    const updatedActivities = [...activities, activity];
+    // Sort the activities by start time
+    updatedActivities.sort((a, b) => new Date(a.startTime) - new Date(b.startTime));
+    setActivities(updatedActivities);
   };
 
   const removeActivity = (id) => {
