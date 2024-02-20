@@ -1,3 +1,4 @@
+//SingleActivity.js
 import React, { useEffect } from "react";
 import { View, Text, Modal, Button, StyleSheet } from "react-native";
 import ActivityForm from "./ActivityForm";

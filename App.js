@@ -56,7 +56,8 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    // backgroundColor: "black",
+    // backgroundColor: "rgba(255, 255, 255, 0)",
   },
   content: {
     flex: 1,
@@ -72,7 +73,7 @@ const styles = StyleSheet.create({
   },
   activityListContainer: {
     flex: 1,
-    marginTop: 10,
+    marginTop: 0,
   },
 });
 

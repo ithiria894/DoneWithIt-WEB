@@ -37,21 +37,26 @@ const ActivityItem = ({ activity }) => {
     <TouchableOpacity onPress={() => setModalVisible(true)}>
       <View style={styles.container}>
         <View style={styles.content}>
-          <Text style={styles.title}>Title: {activity.title} </Text>
+          <View style={styles.TitleAndTime}>
+            <Text style={styles.title}> {activity.title} </Text>
+            <Text>
+                {formatDateTime(activity.startTime)} ~{" "}
+              {formatDateTime(activity.endTime)}
+            </Text>
+          </View>
           {activity.description !== null &&
             activity.description !== "" &&
-            activity.description !== undefined && (
+            activity.description !== undefined &&
+            activity.description !== "None" && (
               <Text>Detail: {activity.description}</Text>
             )}
           {activity.address !== null &&
             activity.address !== "" &&
-            activity.address !== undefined && (
+            activity.address !== undefined && 
+            activity.address !== "None" &&(
               <Text>Location: {activity.address}</Text>
             )}
-          <Text>
-            Time: {formatDateTime(activity.startTime)} ~{" "}
-            {formatDateTime(activity.endTime)}
-          </Text>
+
 
           {/* <Text>Repeating: {activity.repeating ? "Yes" : "No"}</Text> */}
           {/* <Text>Alarm: {activity.alarm}</Text> */}
@@ -104,6 +109,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  TitleAndTime: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });
 
