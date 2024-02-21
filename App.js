@@ -1,16 +1,24 @@
 import React, { useState } from "react";
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, View, TouchableOpacity, Text, Animated } from "react-native";
 import { ActivityProvider } from "./ActivityContext";
 import ActivityList from "./ActivityList";
 import AddActivity from "./AddActivity";
 import Calendar from "./Calendar";
 import AddWithChatgpt from "./AddWithChatgpt";
-import ShowAllActivityButton from "./ShowAllActivityButton"; // Import the new component
+import ShowAllActivityButton from "./ShowAllActivityButton";
+import TodoList from "./TodoList";
+import { TodoListProvider } from "./TodoListContext";
+import TodoAdd from "./TodoAdd";
+import { set } from "date-fns";
 
 const App = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [calendarHeight, setCalendarHeight] = useState(0);
   const [showAllActivities, setShowAllActivities] = useState(false);
+  const [todoListVisible, setTodoListVisible] = useState(false);
+  const [TodoAddVisible, setTodoAddVisible] = useState(false);
+  const todoListWidth = 300; // Adjust the width of the TodoList here
+
   const handleCalendarLayout = (event) => {
     const { height } = event.nativeEvent.layout;
     setCalendarHeight(height);
@@ -19,49 +27,56 @@ const App = () => {
   const handleShowAllActivities = () => {
     setShowAllActivities((prevShowAllActivities) => !prevShowAllActivities);
     setSelectedDate((prevSelectedDate) => {
-      // If selectedDate is currently null, set it to today's date
       if (prevSelectedDate === null) {
         const today = new Date();
-        return today.toISOString(); // Set selectedDate to today's date in ISO format
+        return today.toISOString();
       }
-      // If selectedDate is not null, set it to null
       return null;
     });
   };
 
+  const toggleTodoList = () => {
+    setTodoListVisible(!todoListVisible);
+    setTodoAddVisible(!TodoAddVisible);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <ActivityProvider>
-          <View style={styles.content}>
-            <View
-              onLayout={handleCalendarLayout}
-              style={styles.calendarContainer}
-            >
-              <Calendar
-                setSelectedDate={setSelectedDate}
-                style={styles.calendar}
-              />
-            </View>
-            <View
-              style={[styles.buttonsContainer, { marginTop: calendarHeight }]}
-            >
-              <ShowAllActivityButton
-                onPress={handleShowAllActivities}
-                showAll={showAllActivities}
-              />
-              <AddActivity />
-              <AddWithChatgpt />
-            </View>
-            <View style={styles.activityListContainer}>
-              <ActivityList
-                selectedDate={selectedDate}
-                setSelectedDate={setSelectedDate}
-              />
-            </View>
-          </View>
-        </ActivityProvider>
-      </View>
+      <ScrollView>
+        <View style={styles.content}>
+          <ActivityProvider>
+            <TodoListProvider>
+              <View style={styles.content}>
+                <View onLayout={handleCalendarLayout} style={styles.calendarContainer}>
+                  <Calendar setSelectedDate={setSelectedDate} style={styles.calendar} />
+                </View>
+                <View style={[styles.buttonsContainer, { marginTop: calendarHeight }]}>
+                  <ShowAllActivityButton onPress={handleShowAllActivities} showAll={showAllActivities} />
+                  <AddActivity />
+                  
+                  <AddWithChatgpt />
+                </View>
+                <View style={styles.activityListContainer}>
+                  <ActivityList selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+                </View>
+                <Animated.View
+                  style={[
+                    styles.todoListContainer,
+                    { transform: [{ translateX: todoListVisible ? 0 : todoListWidth }] },
+                  ]}
+                >
+                  <TodoList />
+                </Animated.View>
+                <TouchableOpacity style={styles.tag} onPress={toggleTodoList}>
+                  <Text style={styles.tagText}>Todos</Text>
+                  {/* <TodoAdd /> */}
+                  {TodoAddVisible && <TodoAdd />}
+                </TouchableOpacity>
+              </View>
+            </TodoListProvider>
+          </ActivityProvider>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -69,8 +84,6 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "black",
-    // backgroundColor: "rgba(255, 255, 255, 0)",
   },
   content: {
     flex: 1,
@@ -87,6 +100,27 @@ const styles = StyleSheet.create({
   activityListContainer: {
     flex: 1,
     marginTop: 0,
+  },
+  todoListContainer: {
+    position: "absolute",
+    right: 0,
+    top: 100,
+    bottom: 0,
+    width: 300, // Set the width of the TodoList
+    height: "80%",
+    backgroundColor: "rgba(255,255,255,0.9)",
+  },
+  tag: {
+    position: "absolute",
+    right: 0,
+    top: 500, // Adjust the position of the tag as needed
+    backgroundColor: "rgba(0,0,0,0.5)",
+    padding: 10,
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
+  },
+  tagText: {
+    color: "#FFF",
   },
 });
 
