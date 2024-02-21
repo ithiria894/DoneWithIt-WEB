@@ -21,7 +21,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ithiria137.DoneWithIt"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -31,9 +32,7 @@
         "projectId": "29328545-77b8-463c-88d9-7277099d100d"
       }
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "1.0.0", 
     "updates": {
       "url": "https://u.expo.dev/29328545-77b8-463c-88d9-7277099d100d"
     }

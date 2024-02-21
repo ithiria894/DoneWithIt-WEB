@@ -10,7 +10,7 @@ import ShowAllActivityButton from "./ShowAllActivityButton"; // Import the new c
 const App = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [calendarHeight, setCalendarHeight] = useState(0);
-  const [showAllActivities, setShowAllActivities] = useState(false); 
+  const [showAllActivities, setShowAllActivities] = useState(false);
   const handleCalendarLayout = (event) => {
     const { height } = event.nativeEvent.layout;
     setCalendarHeight(height);
@@ -28,23 +28,36 @@ const App = () => {
       return null;
     });
   };
-  
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <ActivityProvider>
           <View style={styles.content}>
-            <View onLayout={handleCalendarLayout} style={styles.calendarContainer}>
-              <Calendar setSelectedDate={setSelectedDate} style={styles.calendar} />
+            <View
+              onLayout={handleCalendarLayout}
+              style={styles.calendarContainer}
+            >
+              <Calendar
+                setSelectedDate={setSelectedDate}
+                style={styles.calendar}
+              />
             </View>
-            <View style={[styles.buttonsContainer, { marginTop: calendarHeight }]}>
-            <ShowAllActivityButton onPress={handleShowAllActivities} showAll={showAllActivities}/>
+            <View
+              style={[styles.buttonsContainer, { marginTop: calendarHeight }]}
+            >
+              <ShowAllActivityButton
+                onPress={handleShowAllActivities}
+                showAll={showAllActivities}
+              />
               <AddActivity />
               <AddWithChatgpt />
             </View>
             <View style={styles.activityListContainer}>
-              <ActivityList selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+              <ActivityList
+                selectedDate={selectedDate}
+                setSelectedDate={setSelectedDate}
+              />
             </View>
           </View>
         </ActivityProvider>

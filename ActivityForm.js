@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   Modal,
   FlatList,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
 
 const ActivityForm = ({ initialActivity, onSubmit, onCancel }) => {
@@ -18,7 +20,7 @@ const ActivityForm = ({ initialActivity, onSubmit, onCancel }) => {
     address: "",
     startTime: "",
     endTime: "",
-    repeating: false,
+    // repeating: false,
     alarm: "0",
   });
 
@@ -65,77 +67,78 @@ const ActivityForm = ({ initialActivity, onSubmit, onCancel }) => {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Title:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter title"
-        value={activity.title}
-        onChangeText={(text) => handleChange("title", text)}
-      />
-      <Text style={styles.label}>Description:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter description"
-        value={activity.description}
-        onChangeText={(text) => handleChange("description", text)}
-      />
-      <Text style={styles.label}>Address:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter Address"
-        value={activity.address}
-        onChangeText={(text) => handleChange("address", text)}
-      />
-      <Text style={styles.label}>Start Time:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter start time"
-        value={activity.startTime}
-        onChangeText={(text) => handleChange("startTime", text)}
-      />
-      <Text style={styles.label}>End Time:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter end time"
-        value={activity.endTime}
-        onChangeText={(text) => handleChange("endTime", text)}
-      />
-      <View style={styles.checkboxContainer}>
-        <Text style={styles.label}>Repeating:</Text>
-        <Switch
-          value={activity.repeating}
-          onValueChange={(value) => handleChange("repeating", value)}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <Text style={styles.label}>Title:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter title"
+          value={activity.title}
+          onChangeText={(text) => handleChange("title", text)}
         />
-      </View>
-      <Text style={styles.label}>Alarm:</Text>
-      <TouchableOpacity
-        style={styles.dropdownButton}
-        onPress={() => setShowDropdown(true)}
-      >
-        <Text>{alarmOptions.find((opt) => opt.value === activity.alarm)?.label || "Select Alarm"}</Text>
-      </TouchableOpacity>
-      <Modal
-        visible={showDropdown}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setShowDropdown(false)}
-      >
-        <View style={styles.modalContainer}>
-          <FlatList
-            data={alarmOptions}
-            renderItem={renderAlarmOption}
-            keyExtractor={(item) => item.value}
+        <Text style={styles.label}>Description:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter description"
+          value={activity.description}
+          onChangeText={(text) => handleChange("description", text)}
+        />
+        <Text style={styles.label}>Address:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter Address"
+          value={activity.address}
+          onChangeText={(text) => handleChange("address", text)}
+        />
+        <Text style={styles.label}>Start Time:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter start time"
+          value={activity.startTime}
+          onChangeText={(text) => handleChange("startTime", text)}
+        />
+        <Text style={styles.label}>End Time:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter end time"
+          value={activity.endTime}
+          onChangeText={(text) => handleChange("endTime", text)}
+        />
+        {/* <View style={styles.checkboxContainer}>
+          <Text style={styles.label}>Repeating:</Text>
+          <Switch
+            value={activity.repeating}
+            onValueChange={(value) => handleChange("repeating", value)}
           />
-          <Button title="Close" onPress={() => setShowDropdown(false)} />
+        </View> */}
+        <Text style={styles.label}>Alarm:</Text>
+        <TouchableOpacity
+          style={styles.dropdownButton}
+          onPress={() => setShowDropdown(true)}
+        >
+          <Text>{alarmOptions.find((opt) => opt.value === activity.alarm)?.label || "Select Alarm"}</Text>
+        </TouchableOpacity>
+        <Modal
+          visible={showDropdown}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setShowDropdown(false)}
+        >
+          <View style={styles.modalContainer}>
+            <FlatList
+              data={alarmOptions}
+              renderItem={renderAlarmOption}
+              keyExtractor={(item) => item.value}
+            />
+            <Button title="Close" onPress={() => setShowDropdown(false)} />
+          </View>
+        </Modal>
+        <View style={styles.buttonContainer}>
+          <Button title="Cancel" onPress={onCancel} />
+          <Button title="Save" onPress={handleSubmit} />
         </View>
-      </Modal>
-      <View style={styles.buttonContainer}>
-        
-        <Button title="Cancel" onPress={onCancel} />
-        <Button title="Save" onPress={handleSubmit} />
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 

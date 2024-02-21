@@ -6,6 +6,7 @@ import {
   Modal,
   TouchableOpacity,
   Button,
+  Alert,
 } from "react-native";
 import { ActivityContext } from "./ActivityContext";
 import ActivityForm from "./ActivityForm";
@@ -15,13 +16,30 @@ const ActivityItem = ({ activity }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleRemove = () => {
-    removeActivity(activity.id);
+    Alert.alert(
+      "Confirm Deletion",
+      "Are you sure you want to delete this activity?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: () => {
+            removeActivity(activity.id);
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   const handleSubmit = (newActivity) => {
     editActivity(activity.id, newActivity);
     setModalVisible(false);
   };
+
   function formatDateTime(dateTimeString) {
     const date = new Date(dateTimeString);
     const options = {
@@ -40,7 +58,7 @@ const ActivityItem = ({ activity }) => {
           <View style={styles.TitleAndTime}>
             <Text style={styles.title}> {activity.title} </Text>
             <Text>
-                {formatDateTime(activity.startTime)} ~{" "}
+              {formatDateTime(activity.startTime)} ~{" "}
               {formatDateTime(activity.endTime)}
             </Text>
           </View>
@@ -52,15 +70,10 @@ const ActivityItem = ({ activity }) => {
             )}
           {activity.address !== null &&
             activity.address !== "" &&
-            activity.address !== undefined && 
-            activity.address !== "None" &&(
+            activity.address !== undefined &&
+            activity.address !== "None" && (
               <Text>Location: {activity.address}</Text>
             )}
-
-
-          {/* <Text>Repeating: {activity.repeating ? "Yes" : "No"}</Text> */}
-          {/* <Text>Alarm: {activity.alarm}</Text> */}
-          {/* <Text>Created: {activity.createdTime}</Text> */}
         </View>
         <View>
           <Button title="Delete" color="red" onPress={handleRemove} />
@@ -90,7 +103,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: 3,
-    // marginVertical: 5,
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 5,
@@ -102,7 +114,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 12,
     fontWeight: "bold",
-    // textDecorationLine: "underline",
   },
   modalContainer: {
     flex: 1,

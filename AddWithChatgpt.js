@@ -144,6 +144,13 @@ const AddWithChatgpt = () => {
   const clearContent = () => {
     setUserInput("");
   };
+  const handleModify = () => {
+    //close the activity form
+    setActivityFormVisible(false);
+    //open the modal again
+    setModalVisible(true);
+
+  }
 
   return (
     <View style={styles.container}>
@@ -176,6 +183,7 @@ const AddWithChatgpt = () => {
               
               <View style={styles.buttonContainer}>
                 <Button title="Cancel" onPress={handleCancel} />
+                
                 <Button title="Submit" onPress={callGeminiAPI} />
               </View>
               {isLoading && <ActivityIndicator style={styles.activityIndicator} />}
@@ -184,9 +192,9 @@ const AddWithChatgpt = () => {
           </TouchableWithoutFeedback>
         </View>
       </Modal>
-
+      
       <Modal
-        animationType="slide"
+        animationType="none"
         transparent={true}
         visible={ActivityFormVisible}
         onRequestClose={() => setActivityFormVisible(false)}
@@ -194,8 +202,9 @@ const AddWithChatgpt = () => {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>User Input</Text>
-            <View>
+            <View style={styles.UserInputAndModifyButton}>
               <Text>{userInput}</Text>
+              <Button title="Modify With Chatgpt" onPress={handleModify} />
             </View>
             <Text style={styles.modalTitle}>Generated Activity</Text>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -271,6 +280,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     alignSelf: "center",
     top: "50%",
+  },
+  UserInputAndModifyButton: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 10,
   },
 });
 
