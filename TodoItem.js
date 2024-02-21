@@ -63,17 +63,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 10,
+    padding: 5,
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 5,
-    marginBottom: 10,
+    marginBottom: 5,
   },
   content: {
     flex: 1,
   },
   title: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: 'bold',
   },
   modalContainer: {
@@ -81,6 +81,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  Button: {
+    fontSize: 12,
   },
 });
 

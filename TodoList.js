@@ -15,6 +15,7 @@ const TodoList = () => {
 
   return (
     <View>
+        <Text>Todo List</Text>
       {TodoList.map((todo, index) => (
         <View key={todo.id}>
           {/* Render date title if it's the first todo of the day

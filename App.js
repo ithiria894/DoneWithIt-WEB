@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { SafeAreaView, ScrollView, StyleSheet, View, TouchableOpacity, Text, Animated } from "react-native";
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Text,
+  Animated,
+} from "react-native";
 import { ActivityProvider } from "./ActivityContext";
 import ActivityList from "./ActivityList";
 import AddActivity from "./AddActivity";
@@ -18,6 +26,11 @@ const App = () => {
   const [todoListVisible, setTodoListVisible] = useState(false);
   const [TodoAddVisible, setTodoAddVisible] = useState(false);
   const todoListWidth = 300; // Adjust the width of the TodoList here
+  const [todoListAnimation, setTodoListAnimation] = useState(
+    new Animated.Value(todoListWidth)
+  );
+
+  
 
   const handleCalendarLayout = (event) => {
     const { height } = event.nativeEvent.layout;
@@ -38,6 +51,12 @@ const App = () => {
   const toggleTodoList = () => {
     setTodoListVisible(!todoListVisible);
     setTodoAddVisible(!TodoAddVisible);
+
+    Animated.timing(todoListAnimation, {
+      toValue: todoListVisible ? todoListWidth : 0, // Toggle between 0 and the width
+      duration: 500, // Animation duration in milliseconds
+      useNativeDriver: true, // Use native driver for better performance
+    }).start();
   };
 
   return (
@@ -47,31 +66,65 @@ const App = () => {
           <ActivityProvider>
             <TodoListProvider>
               <View style={styles.content}>
-                <View onLayout={handleCalendarLayout} style={styles.calendarContainer}>
-                  <Calendar setSelectedDate={setSelectedDate} style={styles.calendar} />
+                <View
+                  onLayout={handleCalendarLayout}
+                  style={styles.calendarContainer}
+                >
+                  <Calendar
+                    setSelectedDate={setSelectedDate}
+                    style={styles.calendar}
+                  />
                 </View>
-                <View style={[styles.buttonsContainer, { marginTop: calendarHeight }]}>
-                  <ShowAllActivityButton onPress={handleShowAllActivities} showAll={showAllActivities} />
+                <View
+                  style={[
+                    styles.buttonsContainer,
+                    { marginTop: calendarHeight },
+                  ]}
+                >
+                  <ShowAllActivityButton
+                    onPress={handleShowAllActivities}
+                    showAll={showAllActivities}
+                  />
                   <AddActivity />
-                  
+
                   <AddWithChatgpt />
                 </View>
                 <View style={styles.activityListContainer}>
-                  <ActivityList selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+                  <ActivityList
+                    selectedDate={selectedDate}
+                    setSelectedDate={setSelectedDate}
+                  />
                 </View>
                 <Animated.View
                   style={[
                     styles.todoListContainer,
-                    { transform: [{ translateX: todoListVisible ? 0 : todoListWidth }] },
+                    { transform: [{ translateX: todoListAnimation }] }, // Use the animated value here
                   ]}
                 >
                   <TodoList />
                 </Animated.View>
-                <TouchableOpacity style={styles.tag} onPress={toggleTodoList}>
-                  <Text style={styles.tagText}>Todos</Text>
-                  {/* <TodoAdd /> */}
-                  {TodoAddVisible && <TodoAdd />}
-                </TouchableOpacity>
+
+                <Animated.View
+  style={[
+    styles.tag,
+    {
+      transform: [
+        // TranslateX for the tag should be the negative of the todoList's translateX plus the width of the todoList to stick to its left side
+        { translateX: todoListAnimation.interpolate({
+            inputRange: [0, todoListWidth],
+            outputRange: [-todoListWidth, 0],
+          }) 
+        },
+      ],
+    },
+  ]}
+>
+  <TouchableOpacity onPress={toggleTodoList}>
+    <Text style={styles.tagText}>Todos</Text>
+    {TodoAddVisible && <TodoAdd />}
+  </TouchableOpacity>
+</Animated.View>
+
               </View>
             </TodoListProvider>
           </ActivityProvider>
