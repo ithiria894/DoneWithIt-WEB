@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 12,
     fontWeight: 'bold',
+    color: 'white',
   },
   modalContainer: {
     flex: 1,

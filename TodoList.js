@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, FlatList } from 'react-native';
 import { TodoListContext } from './TodoListContext';
 import TodoItem from './TodoItem'; // Assuming you have a TodoItem component
+import { StyleSheet } from 'react-native';
 
 const TodoList = () => {
   const { TodoList } = useContext(TodoListContext);
@@ -13,20 +14,33 @@ const TodoList = () => {
     return `${day}-${month}-${year}`;
   };
 
-  return (
-    <View>
-        <Text>Todo List</Text>
-      {TodoList.map((todo, index) => (
-        <View key={todo.id}>
-          {/* Render date title if it's the first todo of the day
-          {index === 0 || formatDate(TodoList[index - 1].createdTime) !== formatDate(todo.createdTime) ? (
-            <Text>{formatDate(todo.createdTime)}</Text>
-          ) : null} */}
-          <TodoItem todo={todo} />
-        </View>
-      ))}
+  const renderItem = ({ item }) => (
+    <View key={item.id}>
+      {/* Render date title if it's the first todo of the day
+      {index === 0 || formatDate(TodoList[index - 1].createdTime) !== formatDate(item.createdTime) ? (
+        <Text>{formatDate(item.createdTime)}</Text>
+      ) : null} */}
+      <TodoItem todo={item} />
     </View>
   );
+
+  return (
+    <FlatList
+      data={TodoList}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.id.toString()}
+      ListHeaderComponent={<Text style={styles.todolistTitle}>Todo List</Text>}
+    />
+  );
 };
+
+const styles = StyleSheet.create({
+  todolistTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "white",
+  },
+});
 
 export default TodoList;

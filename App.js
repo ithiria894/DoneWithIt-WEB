@@ -29,6 +29,9 @@ const App = () => {
   const [todoListAnimation, setTodoListAnimation] = useState(
     new Animated.Value(todoListWidth)
   );
+ // Define scrollEnabled state and its setter
+  const [scrollEnabled, setScrollEnabled] = useState(true);
+
 
   const handleCalendarLayout = (event) => {
     const { height } = event.nativeEvent.layout;
@@ -57,9 +60,15 @@ const App = () => {
     }).start();
   };
 
+  // Handlers to toggle scrollEnabled
+  const handleBeginDrag = () => setScrollEnabled(false);
+  const handleEndDrag = () => setScrollEnabled(true);
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView 
+      // scrollEnabled={scrollEnabled}
+      >
         <View style={styles.content}>
           <ActivityProvider>
             <TodoListProvider>
@@ -99,7 +108,10 @@ const App = () => {
                     { transform: [{ translateX: todoListAnimation }] }, // Use the animated value here
                   ]}
                 >
-                  <TodoList />
+                  <TodoList
+                    // onBeginDrag={handleBeginDrag}
+                    // onEndDrag={handleEndDrag}
+                  />
                 </Animated.View>
 
                 <Animated.View
@@ -159,13 +171,15 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: 300, // Set the width of the TodoList
     height: "80%",
-    backgroundColor: "rgba(255,255,255,0.9)",
+    backgroundColor: "rgba(0,0,0,0.8)",
+    color: "#FFF",
+    borderRadius: 10,
   },
   tag: {
     position: "absolute",
     right: 0,
     top: 500, // Adjust the position of the tag as needed
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.8)",
     padding: 10,
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,

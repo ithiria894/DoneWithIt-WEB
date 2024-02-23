@@ -30,6 +30,8 @@
     "react-native-swipeable": "^0.6.0",
     "react-native-web": "~0.19.6",
     "typescript": "^5.3.0"
+
+
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
