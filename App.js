@@ -30,8 +30,6 @@ const App = () => {
     new Animated.Value(todoListWidth)
   );
 
-  
-
   const handleCalendarLayout = (event) => {
     const { height } = event.nativeEvent.layout;
     setCalendarHeight(height);
@@ -105,26 +103,26 @@ const App = () => {
                 </Animated.View>
 
                 <Animated.View
-  style={[
-    styles.tag,
-    {
-      transform: [
-        // TranslateX for the tag should be the negative of the todoList's translateX plus the width of the todoList to stick to its left side
-        { translateX: todoListAnimation.interpolate({
-            inputRange: [0, todoListWidth],
-            outputRange: [-todoListWidth, 0],
-          }) 
-        },
-      ],
-    },
-  ]}
->
-  <TouchableOpacity onPress={toggleTodoList}>
-    <Text style={styles.tagText}>Todos</Text>
-    {TodoAddVisible && <TodoAdd />}
-  </TouchableOpacity>
-</Animated.View>
-
+                  style={[
+                    styles.tag,
+                    {
+                      transform: [
+                        // TranslateX for the tag should be the negative of the todoList's translateX plus the width of the todoList to stick to its left side
+                        {
+                          translateX: todoListAnimation.interpolate({
+                            inputRange: [0, todoListWidth],
+                            outputRange: [-todoListWidth, 0],
+                          }),
+                        },
+                      ],
+                    },
+                  ]}
+                >
+                  <TouchableOpacity onPress={toggleTodoList}>
+                    <Text style={styles.tagText}>Todos</Text>
+                    {TodoAddVisible && <TodoAdd />}
+                  </TouchableOpacity>
+                </Animated.View>
               </View>
             </TodoListProvider>
           </ActivityProvider>
