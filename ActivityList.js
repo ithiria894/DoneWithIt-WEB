@@ -49,4 +49,5 @@ const ActivityList = ({ selectedDate, setSelectedDate }) => {
   );
 };
 
+
 export default ActivityList;
